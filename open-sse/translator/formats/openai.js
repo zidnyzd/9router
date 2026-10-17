@@ -20,6 +20,12 @@ export function filterToOpenAIFormat(body, opts = {}) {
     // Normalize developer role to system (many providers don't support developer)
     if (msg.role === ROLE.DEVELOPER) msg = { ...msg, role: ROLE.SYSTEM };
 
+    // Strip unsupported "name" in tool role messages (strict backends like GLM/Zhipu reject "name" in tool role)
+    if (msg.role === ROLE.TOOL && msg.name) {
+      const { name, ...rest } = msg;
+      msg = rest;
+    }
+
     // Keep tool messages as-is (OpenAI format)
     if (msg.role === ROLE.TOOL) return msg;
 
