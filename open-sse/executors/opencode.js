@@ -442,6 +442,13 @@ export class OpenCodeExecutor extends BaseExecutor {
       }
     }
 
+    // OpenCode inference endpoint is an OpenAI-compatible gateway whose Go struct
+    // rejects the zai-native "thinking" object with:
+    // [unknown_parameter] invalid request body: json: unknown field "thinking"
+    if (body && typeof body === "object" && "thinking" in body) {
+      delete body.thinking;
+    }
+
     if (isResponsesModel(model || body?.model) && body && typeof body === "object") {
       // ponytail: chỉ model đã xác nhận auto-only; mở allowlist khi có bằng chứng.
       if ("tool_choice" in body && body.tool_choice !== "auto"

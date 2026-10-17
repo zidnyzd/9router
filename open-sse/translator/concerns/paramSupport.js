@@ -42,6 +42,10 @@ const STRIP_RULES = [
   // Current OpenAI models (gpt-5.x / gpt-6.x) reject `max_tokens` with HTTP 400
   // ("Use 'max_completion_tokens' instead"). Clients send `max_tokens`, so rename it.
   { provider: "openai", renameParams: { max_tokens: "max_completion_tokens" } },
+  // OpenCode chat/completions relay rejects the zai-native `thinking` object with:
+  // [unknown_parameter] invalid request body: json: unknown field "thinking"
+  { provider: "opencode", drop: ["thinking"] },
+  { provider: "opencode-zen", drop: ["thinking"] },
 ];
 
 // Test a rule's match (regex or predicate) against the model id.
