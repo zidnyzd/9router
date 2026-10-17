@@ -339,6 +339,18 @@ export class OpenCodeExecutor extends BaseExecutor {
     // Zen rejects non-streaming requests on free models with 403 FreeTierError;
     // always stream upstream and let the handler layer aggregate for non-stream clients.
     if (body && typeof body === "object") body.stream = true;
+
+    // Strip "name" property from messages[]: upstream providers like GLM (Zhipu AI)
+    // strictly reject requests containing "name" with:
+    // [unsupported_parameter] messages[X]: "name" is not supported by this endpoint
+    if (Array.isArray(body?.messages)) {
+      for (const msg of body.messages) {
+        if (msg && typeof msg === "object" && "name" in msg) {
+          delete msg.name;
+        }
+      }
+    }
+
     if (isResponsesModel(model || body?.model) && body && typeof body === "object") {
       // ponytail: chỉ model đã xác nhận auto-only; mở allowlist khi có bằng chứng.
       if ("tool_choice" in body && body.tool_choice !== "auto"
