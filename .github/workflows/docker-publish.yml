@@ -39,8 +39,8 @@ jobs:
           images: ${{ env.GHCR_IMAGE }}
           tags: |
             type=raw,value=latest
-            type=raw,value=0.5.104
-            type=raw,value=0.5.104-glm-fix
+            type=raw,value=0.5.109
+            type=raw,value=0.5.109-opencode-fix
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -50,7 +50,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            APP_VERSION=0.5.104
+            APP_VERSION=0.5.109
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
